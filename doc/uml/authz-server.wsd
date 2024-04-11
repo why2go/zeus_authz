@@ -1,0 +1,71 @@
+' 主结构图
+@startuml zeus_auth
+AuthzSystem "1" o-- "n" SubApp
+SubApp "1" -- "1" AppUserPool
+SubApp "1" -- "1" RbacModel
+AppUserPool o-- AppUser
+SubApp o-- ApiCaller
+
+class RbacModel {
+    void addPolicy()
+    bool checkPermission()
+}
+
+RbacModel "1" *-- "n" Policy
+
+Policy *-- "0..n" Subject
+Policy *-- "0..n" Role
+Policy *-- "0..n" Object
+Policy *-- "0..n" Action
+
+class Policy {
+    string sub
+    string obj
+    string role
+    string act
+}
+@enduml
+
+' Subject
+@startuml subject
+interface Subject {
+    string ID()
+}
+
+Subject <|.. AppUser
+Subject <|.. ApiCaller
+
+class AppUser {
+    string userId
+    string ID()
+}
+
+class ApiCaller {
+    string clientId
+    string ID()
+}
+@enduml
+
+' Object
+@startuml Object
+interface Object {
+    string ID()
+}
+
+Object <|.. Menu
+Object <|.. Button
+Object <|.. ApiPath
+Object <|.. Entity
+@enduml
+
+' 资源说到底就只有一个标识属性最关键，但是资源的表示形式却是多种多样的
+@startuml resource_type
+
+SubApp -- ResourceType
+
+
+class TreeResourceType {
+    type_id string
+}
+
+@enduml
